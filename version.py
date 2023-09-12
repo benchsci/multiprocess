@@ -5,9 +5,9 @@
 # License: 3-clause BSD.  The full license text is available at:
 #  - https://github.com/uqfoundation/multiprocess/blob/master/LICENSE
 
-__version__ = '0.70.16.dev0'
-__author__ = 'Mike McKerns'
-__contact__ = 'mmckerns@uqfoundation.org'
+__version__ = "0.70.16.1"
+__author__ = "Mike McKerns"
+__contact__ = "mmckerns@uqfoundation.org"
 
 
 def get_license_text(filepath):
@@ -15,7 +15,7 @@ def get_license_text(filepath):
     try:
         LICENSE = open(filepath).read()
     except:
-        LICENSE = ''
+        LICENSE = ""
     return LICENSE
 
 
@@ -26,31 +26,31 @@ def get_readme_as_rst(filepath):
         name, null = fh.readline().rstrip(), fh.readline()
         tag, null = fh.readline(), fh.readline()
         tag = "%s: %s" % (name, tag)
-        split = '-'*(len(tag)-1)+'\n'
-        README = ''.join((null,split,tag,split,'\n'))
+        split = "-" * (len(tag) - 1) + "\n"
+        README = "".join((null, split, tag, split, "\n"))
         skip = False
         for line in fh:
-            if line.startswith('['):
+            if line.startswith("["):
                 continue
-            elif skip and line.startswith('    http'):
-                README += '\n' + line
-            elif line.startswith('* '):
-                README += line.replace('* ','    - ',1)
-            elif line.startswith('-'):
-                README += line.replace('-','=') + '\n'
-            elif line.startswith('!['): # image
-                alt,img = line.split('](',1)
-                if img.startswith('docs'): # relative path
-                    img = img.split('docs/source/',1)[-1] # make is in docs
-                README += '.. image:: ' + img.replace(')','')
-                README += '   :alt: ' + alt.replace('![','') + '\n'
-            #elif ')[http' in line: # alt text link (`text <http://url>`_)
+            elif skip and line.startswith("    http"):
+                README += "\n" + line
+            elif line.startswith("* "):
+                README += line.replace("* ", "    - ", 1)
+            elif line.startswith("-"):
+                README += line.replace("-", "=") + "\n"
+            elif line.startswith("!["):  # image
+                alt, img = line.split("](", 1)
+                if img.startswith("docs"):  # relative path
+                    img = img.split("docs/source/", 1)[-1]  # make is in docs
+                README += ".. image:: " + img.replace(")", "")
+                README += "   :alt: " + alt.replace("![", "") + "\n"
+            # elif ')[http' in line: # alt text link (`text <http://url>`_)
             else:
                 README += line
-                skip = line.endswith(':\n')
+                skip = line.endswith(":\n")
         fh.close()
     except:
-        README = ''
+        README = ""
     return README
 
 
@@ -64,23 +64,28 @@ def write_info_file(dirpath, modulename, **info):
         license: the module's license contents
     """
     import os
-    infofile = os.path.join(dirpath, '%s/__info__.py' % modulename)
-    header = '''#!/usr/bin/env python
+
+    infofile = os.path.join(dirpath, "%s/__info__.py" % modulename)
+    header = """#!/usr/bin/env python
 #
 # Author: Mike McKerns (mmckerns @caltech and @uqfoundation)
 # Copyright (c) 2023 The Uncertainty Quantification Foundation.
 # License: 3-clause BSD.  The full license text is available at:
 #  - https://github.com/uqfoundation/multiprocess/blob/master/LICENSE
-''' #XXX: package, author, and email are hardwired in the header
-    doc = info.get('doc', None)
-    version = info.get('version', None)
-    author = info.get('author', None)
-    license = info.get('license', None)
-    with open(infofile, 'w') as fh:
+"""  # XXX: package, author, and email are hardwired in the header
+    doc = info.get("doc", None)
+    version = info.get("version", None)
+    author = info.get("author", None)
+    license = info.get("license", None)
+    with open(infofile, "w") as fh:
         fh.write(header)
-        if doc is not None: fh.write("'''%s'''\n\n" % doc)
-        fh.write("__all__ = []\n") # needed for test_import
-        if version is not None: fh.write("__version__ = %r\n" % version)
-        if author is not None: fh.write("__author__ = %r\n\n" % author)
-        if license is not None: fh.write("__license__ = '''\n%s'''\n" % license)
+        if doc is not None:
+            fh.write("'''%s'''\n\n" % doc)
+        fh.write("__all__ = []\n")  # needed for test_import
+        if version is not None:
+            fh.write("__version__ = %r\n" % version)
+        if author is not None:
+            fh.write("__author__ = %r\n\n" % author)
+        if license is not None:
+            fh.write("__license__ = '''\n%s'''\n" % license)
     return
